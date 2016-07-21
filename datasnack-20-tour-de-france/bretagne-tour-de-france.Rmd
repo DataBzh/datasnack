@@ -1,0 +1,81 @@
+---
+title: "Le Tour de France en Bretagne"
+author: "Cérès Carton"
+date: "17 July 2016"
+output: html_document
+---
+
+# Le jeu de données
+
+Les données sur les étapes et les villes correspondantes ont été récupérées sur Wikipedia en juillet 2016. À chaque édition d'une tour de France correspond une page Wikipedia (exemple : [Tour de France 2016](https://fr.wikipedia.org/wiki/Tour_de_France_2016)). Chacune des pages contient un tableau résumant les étapes, le départ, l'arrivée, la distance, etc. (exemple : [étapes du Tour de France 2016]( https://fr.wikipedia.org/wiki/Tour_de_France_2016#.C3.89tapes)). Pour chaque ville, le code Insee et la géolocalisation ont ensuite été récupérés sur WikiData. 
+
+# L'info
+
+```{r setup, include=FALSE}
+library("ggplot2")
+library("ggmap")
+library("viridis")
+
+bretagne_cities <- read.csv("data/bretagne_cities.csv")
+bretagne_stages <- read.csv("data/bretagne_stages.csv")
+```
+
+__`r nrow(bretagne_cities)` villes__ bretonnes ont vu passer le Tour de France depuis sa création en 1903. _`r length(unique(bretagne_stages$tour))` éditions_ du Tour ont eu une ville étape (ou de départ) bretonne.
+Les trois villes qui ont vu passer le plus d'éditions du Tour sont :
+
+* Brest (29 éditions)
+* Rennes (16 éditions)
+* Vannes (12 éditions)
+
+Parmi ces `r nrow(bretagne_cities)` villes, `r length(which(bretagne_cities$depart))` villes ont accueillis un départ du Tour : Brest, Rennes, Saint-Brieuc et Plumelec. 
+
+* Brest est la ville de province qui a accueilli le plus de départs du Tour de France. Elle a accueilli le départ du Tour en 1952, 1974 et 2008.
+* Plumelec est une petite commune du Morbihan (environ 2700 habitants) qui a accueilli le Tour cinq fois, et de nombreuses autres compétitions cyclistes, en raison de la présence la [côte de Cadoudal](https://fr.wikipedia.org/wiki/C%C3%B4te_de_Cadoudal).
+
+N.B. : Il y a des différences dans le décompte par rapport à [cette page Wikipedia](https://fr.wikipedia.org/wiki/Villes-%C3%A9tapes_du_Tour_de_France#Villes-.C3.A9tapes) car ils prennent en compte uniquement les arrivées d'étapes (VE+VA), c'est-à-dire que les départs uniques (VD) ne sont pas comptabilisés. Ici je dénombre les éditions, indépendamment de ces critères d'arrivées d'étapes et de départs uniques.
+
+```{r, echo=FALSE, warning=FALSE}
+bretagne_cities['nb_tour'] <- sapply(bretagne_cities$wikipedia_page, function(x){
+  temp = bretagne_stages[union(which(bretagne_stages$arrivee_page == as.character(x)), which(bretagne_stages$"depart_page" == as.character(x))),];
+  return(length(unique(temp$tour)))
+})
+
+
+map_region <- function(df, zoom, title){
+  map <- ggmap::get_map(location = c( left = min(df$longitude, na.rm = TRUE) , bottom =min(df$latitude, na.rm = TRUE) , right =max(df$longitude, na.rm = TRUE), top =max(df$latitude, na.rm = TRUE)), zoom = zoom)
+
+ggmap(map) +
+  geom_point(data = df,
+             aes(x = longitude, y = latitude, size = nb_tour,  colour= depart)) +
+  theme(axis.line=element_blank(),axis.text.x=element_blank(),
+        axis.text.y=element_blank(),axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        text = element_text(size=12),
+        axis.title.y=element_blank(),
+        panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),plot.background=element_blank())+
+  ggtitle(title) +
+  theme(plot.title = element_text(lineheight=1, face="bold"))
+}
+
+# Carte contenant toutes les données
+map_region(bretagne_cities, 8, "Passages du Tour de France en Bretagne (1903-2016)")
+```
+
+Version interactive de la carte :
+
+```{r, echo=FALSE}
+library(leaflet)
+bretagne_cities['liste_wikipedia_pages'] <- sapply(bretagne_cities$wikipedia_page, function(x){
+  temp = bretagne_stages[union(which(bretagne_stages$arrivee_page == as.character(x)), which(bretagne_stages$depart_page == as.character(x))),];
+  years = unique(temp$year)
+  years = sort(years)
+  webpages = sapply(years, function(x){paste('
+<a href="https://fr.wikipedia.org/wiki/Tour_de_France_', x,'">', x, "</a>", sep="")})
+  return(paste(webpages,collapse=", "))
+})
+
+leaflet(bretagne_cities[!is.na(bretagne_cities$latitude),]) %>% addTiles() %>%
+  addCircleMarkers(lat = ~latitude, lng = ~longitude, col="red", radius = ~(nb_tour ^ 0.7), popup = ~paste(sep="<br/>", wikipedia_page, country, liste_wikipedia_pages))
+```
+
