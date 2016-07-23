@@ -4,6 +4,10 @@ Here, you will find some codes used to create visualisations in the [Dataviz cat
 
 *** 
 
+Main writer : 
+
+[Colin Fay](https://github.com/ColinFay)
+
 Contributors : 
 
 [Cérès Carton](https://github.com/ceresc) : 
