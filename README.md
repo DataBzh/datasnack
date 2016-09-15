@@ -1,6 +1,6 @@
 # dataviz
 
-Here, you will find some codes used to create visualisations in the [Dataviz category](http://data-bzh.fr/category/dataviz/) on Data Bzh.
+Here, you will find some codes used to create visualisations in the [Datasnack category](http://data-bzh.fr/category/dataviz/datasnack) on Data Bzh.
 
 *** 
 
