@@ -7,6 +7,7 @@ Here, you will find some codes used to create visualisations in the [Datasnack c
 Main writer : 
 
 [Colin Fay](https://github.com/ColinFay)
+[Tristan Le Dain](https://github.com/tristanledain)
 
 Contributors : 
 
