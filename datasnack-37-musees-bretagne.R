@@ -1,9 +1,9 @@
 library(ggplot2)
 library(rgdal)
-cotes <- read.csv("pack.master.cotes-darmor.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
-fin <- read.csv("pack.master.finistere.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
-ill <- read.csv("pack.master.ille-et-vilaine.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
-mor <- read.csv("pack.master.morbihan.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
+cotes <- read.csv("/home/colin/Dropbox/R/misc/pack.master.cotes-darmor.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
+fin <- read.csv("/home/colin/Dropbox/R/misc/pack.master.finistere.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
+ill <- read.csv("/home/colin/Dropbox/R/misc/pack.master.ille-et-vilaine.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
+mor <- read.csv("/home/colin/Dropbox/R/misc/pack.master.morbihan.tourismattractions_museums.csv", stringsAsFactors = FALSE)[,1:3]
 cotes$dep <- "Côtes d'Armor"
 fin$dep <- "Finistère"
 ill$dep <- "Ille-et-Vilaine"
@@ -22,7 +22,8 @@ ggplot(wmap_df, aes(long,lat, group=group)) +
   ggtitle("Musées en Bretagne") +
   xlab("") +
   ylab("") +
-  labs(color = "Département") + 
+  labs(color = "Département", 
+       caption = "http://data-bzh.fr") + 
   theme(title=element_text(),
         plot.title=element_text(margin=margin(0,0,20,0), size=30, hjust = 0.5),
         axis.text.x=element_blank(),

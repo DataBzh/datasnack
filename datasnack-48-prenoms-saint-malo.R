@@ -1,13 +1,12 @@
 library(tidyverse)
 stma <- read_csv2("https://data.stmalo-agglomeration.fr/explore/dataset/prenoms-donnes-aux-enfants-nes-a-saint-malo/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true")
-stma <- stma %>%
+stma %>%
   group_by(Année) %>%
   arrange(desc(`Nombre de naissances`)) %>% 
   summarise(first = first(Prénom), 
             vol = first(`Nombre de naissances`)) %>%
-  ungroup() %>%
   ggplot(aes(Année, vol)) + 
-  geom_bar(stat = "identity", fill = prénom) +
+  geom_bar(stat = "identity", fill = databzh$colour1) +
   scale_x_continuous(breaks = seq(1994,2016,by=2)) +
   geom_label(aes(label = first), size = 3) +
   coord_flip() +

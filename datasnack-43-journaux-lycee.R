@@ -1,6 +1,6 @@
 library(tidyverse)
 library(rgdal) 
-jdl <- read.csv2("journal-des-lycees.csv")
+jdl <- read.csv2("/home/colin/Dropbox/R/misc/journal-des-lycees.csv")
 jdl <- jdl %>% 
   filter(grepl(("^22|^29|^35|^56"), Code.Postal)) %>%
   tidyr::separate(Position, into = c("lon", "lat"), sep = ",")

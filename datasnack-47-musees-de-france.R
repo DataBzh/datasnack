@@ -1,7 +1,7 @@
 library(tidyverse)
 library(rgdal)
 bret <- read_csv2("https://data.culturecommunication.gouv.fr/explore/dataset/liste-et-localisation-des-musees-de-france/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true") %>%
-  filter(NOMREG == "BRETAGNE") %>%
+  filter(Régions == "Bretagne") %>%
   separate("coordonnees_finales", into = c("lon","lat"), sep = ",")
 table(bret$NOMDEP)
 wmap_df <- readOGR(dsn=".", layer="R53_dep") %>%
@@ -11,7 +11,7 @@ ggplot(wmap_df, aes(long,lat, group=group)) +
   coord_map() +
   geom_path(data=wmap_df, aes(long, lat, group=group, fill=NULL), color="grey50") +
   geom_point(data = bret, aes(x = as.numeric(lat), y = as.numeric(lon), group = NULL, col = NOMDEP),size = 4) + 
-  scale_color_manual(values = palette, name = "") +
+  scale_color_manual(values = databzh$colours, name = "") +
   labs(title = "Les Musées de France en Bretagne", 
        caption = "http://data-bzh.fr") + 
   theme(title=element_text(),
