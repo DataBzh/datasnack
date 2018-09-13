@@ -5,7 +5,7 @@ bret <- bret %>% filter(Carsat == "Rennes")
 a <- bret %>% 
   arrange(Années) %>% 
   ggplot(aes(Années, Effectif)) +
-  geom_col(fill = databzh$colour8) + 
+  geom_col(fill = databzh$colours[9]) + 
   labs(title = "Évolution des Effectifs, Carsat de Rennes", 
        substitle = "Données via Open Data de l'assurance retraite", 
        x = "Années", 
